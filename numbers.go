@@ -5,7 +5,10 @@ import (
 	"math"
 )
 
-func NumerFormat(number interface{}, decimals int, decPoint, thousandsSep string) (string, error) {
+// NumberFormat convert float or int to string
+// in local format, for example 123 456,1200
+// from float 123456.12
+func NumberFormat(number interface{}, decimals int, decPoint, thousandsSep string) (string, error) {
 	var num float64
 
 	if decPoint == "" {
@@ -52,7 +55,6 @@ func NumerFormat(number interface{}, decimals int, decPoint, thousandsSep string
 		}
 	}
 
-	//
 	if fract > 0 {
 		ret += decPoint + fmt.Sprintf("%.0f", fract)
 	}
@@ -60,6 +62,5 @@ func NumerFormat(number interface{}, decimals int, decPoint, thousandsSep string
 	if negative {
 		ret = "-" + ret
 	}
-	// fmt.Println("...")
 	return ret, nil
 }

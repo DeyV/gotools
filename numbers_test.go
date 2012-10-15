@@ -29,7 +29,7 @@ func TestNumerFormat(t *testing.T) {
 }
 
 func assertNumer(t *testing.T, data testNumberForm) {
-	if a, _ := NumerFormat(data.Number, data.Decimals, data.DecPoint, data.ThousandsSep); a != data.Required {
+	if a, _ := NumberFormat(data.Number, data.Decimals, data.DecPoint, data.ThousandsSep); a != data.Required {
 		t.Errorf("%f => %s  but is %s", data.Number, data.Required, a)
 	}
 
