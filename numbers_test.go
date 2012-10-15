@@ -4,12 +4,33 @@ import (
 	"testing"
 )
 
+type testNumberForm struct {
+	Required               string
+	Number                 float64
+	Decimals               int
+	DecPoint, ThousandsSep string
+}
+
 func TestNumerFormat(t *testing.T) {
-	if a, _ := NumerFormat(1234, 0, ",", " "); a != "1 234" {
-		t.Error("1234 => 1 234")
+	testdata := []testNumberForm{
+		{"123 123,123", 123123.123, 3, ",", " "},
+		{"-123 123,123", -123123.123, 3, ",", " "},
+		{"-123 123,123", -123123.1234, 3, ",", " "},
+		{"1 123,12", 1123.123, 2, ",", " "},
+		{"123 123.1", 123123.123, 1, ".", " "},
+		{"1233,12300", 1233.123, 5, ",", ""},
+		{"1233.12300", 1233.123, 5, ".", ""},
+		{"1233.12300", 1233.123, 5, "", ""},
 	}
 
-	if a, _ := NumerFormat(1234.123, 2, ",", " "); a != "1 234,12" {
-		t.Error("1234.123 => 1 234,12")
+	for _, data := range testdata {
+		assertNumer(t, data)
 	}
+}
+
+func assertNumer(t *testing.T, data testNumberForm) {
+	if a, _ := NumerFormat(data.Number, data.Decimals, data.DecPoint, data.ThousandsSep); a != data.Required {
+		t.Errorf("%f => %s  but is %s", data.Number, data.Required, a)
+	}
+
 }
