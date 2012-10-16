@@ -8,31 +8,20 @@ import (
 // NumberFormat convert float or int to string
 // in local format, for example 123 456,1200
 // from float 123456.12
-func NumberFormat(number interface{}, decimals int, decPoint, thousandsSep string) (string, error) {
-	var num float64
-
+func NumberFormat(number float64, decimals int, decPoint, thousandsSep string) (string, error) {
 	if decPoint == "" {
 		decPoint = "."
-	}
-
-	switch i := number.(type) {
-	case int:
-		num = float64(number.(int))
-	case float64, float32:
-		num = i.(float64)
-	case nil:
-		num = 0
 	}
 
 	var ret string
 
 	var negative bool
-	if num < 0 {
-		num *= -1
+	if number < 0 {
+		number *= -1
 		negative = true
 	}
 
-	d, fract := math.Modf(num)
+	d, fract := math.Modf(number)
 
 	if decimals <= 0 {
 		fract = 0
@@ -44,7 +33,7 @@ func NumberFormat(number interface{}, decimals int, decPoint, thousandsSep strin
 	var x float64
 	if thousandsSep == "" {
 		ret = fmt.Sprintf("%.0f", d)
-	} else {
+	} else if d >= 1 {
 		for d >= 1 {
 			d, x = math.Modf(d / 1000)
 			x = x * 1000
@@ -53,9 +42,12 @@ func NumberFormat(number interface{}, decimals int, decPoint, thousandsSep strin
 				ret = thousandsSep + ret
 			}
 		}
+	} else {
+		ret = "0"
 	}
 
 	if fract > 0 {
+		fmt.Println(fract)
 		ret += decPoint + fmt.Sprintf("%.0f", fract)
 	}
 
