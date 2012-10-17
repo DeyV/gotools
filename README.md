@@ -7,6 +7,27 @@ gotools is set of simple math and test helpers.
 
 ## Usage
 
+```go
+const (
+	B  = iota // ignore first value by assigning to blank identifier
+	KB = 1 << (10 * iota)
+	MB
+	GB
+	TB
+	PB
+	EB
+	ZB
+	YB
+)
+```
+
+#### func  MemoryFormat
+
+```go
+func MemoryFormat(x float64) string
+```
+MemoryFormat retun memory size (in Bytes) in verbalize form, for example 2.01MB
+
 #### func  NumberFormat
 
 ```go
