@@ -63,6 +63,10 @@ func TestRoundPrec(t *testing.T) {
 
 		{"123123.1", 123123.123, 1},
 		{"123123.2", 123123.223, 1},
+
+		{"123123.23", 123123.22499999999999, 2},
+		{"123123.23", 123123.22499999999993, 2}, // float precision problem, the same like fmt.Sprintf( "%.2f")
+		{"123123.22", 123123.2249993, 2},        // correct behavior, smaller precision
 	}
 
 	for _, data := range testdata {

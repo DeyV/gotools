@@ -12,7 +12,8 @@ gotools is set of simple math and test helpers.
 ```go
 func NumberFormat(number float64, decimals int, decPoint, thousandsSep string) string
 ```
-NumberFormat convert float or int to string in local format, for example:
+NumberFormat convert float or int to string (like PHP number_format() ) in local
+format, for example:
 
     NumberFormat( 123456.12, 4, ",", " " )
     >> 123 456,1200
