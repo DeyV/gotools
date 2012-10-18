@@ -17,7 +17,7 @@ const (
 )
 
 // MemoryFormat retun memory size (in Bytes) in verbalize form, 
-// for example 2.01MB
+// for example 2.01MB.
 func MemoryFormat(x float64) string {
 	switch {
 	case x >= YB:

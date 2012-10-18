@@ -77,10 +77,11 @@ func NumberFormat(number float64, decimals int, decPoint, thousandsSep string) s
 //	Round(±Inf) = ±0
 //	Round(NaN) = 0
 func Round(x float64) int {
-	val := RoundPrec(x, 0)
-	if math.IsNaN(val) || math.IsInf(val, 0) {
+	if math.IsNaN(x) || math.IsInf(x, 0) {
 		return 0
 	}
+
+	val := RoundPrec(x, 0)
 
 	return int(val)
 }
@@ -92,16 +93,21 @@ func Round(x float64) int {
 //	Round(±Inf) = ±Inf
 //	Round(NaN) = NaN
 func RoundPrec(x float64, prec int) float64 {
-	pow := math.Pow(10, float64(prec))
-	intermed := x * pow
-	_, frac := math.Modf(intermed)
-
-	var rounder float64
-	if frac >= 0.5 {
-		rounder = math.Ceil(intermed)
-	} else {
-		rounder = math.Floor(intermed)
+	if math.IsNaN(x) || math.IsInf(x, 0) {
+		return x
 	}
 
-	return rounder / pow
+	var rounder float64
+	pow := math.Pow(10, float64(prec))
+	intermed := x * pow
+	// fmt.Println("intermediate", intermed)
+
+	if intermed < 0.0 {
+		intermed -= 0.5
+	} else {
+		intermed += 0.5
+	}
+	rounder = float64(int64(intermed))
+
+	return rounder / float64(pow)
 }

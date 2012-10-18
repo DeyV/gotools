@@ -49,28 +49,38 @@ func TestNumerFormat(t *testing.T) {
 	}
 }
 
+var testdataRoundPrec = []testRound{
+	{"123123.123", 123123.123, 3},
+	{"-123123.123", -123123.123, 3},
+
+	{"123123.1", 123123.1, 1},
+	{"123123.2", 123123.2, 1},
+
+	{"123123.46", 123123.458, 2},
+	{"123123.24", 123123.239, 2},
+	{"123123.23", 123123.232, 2},
+
+	{"123123.1", 123123.123, 1},
+	{"123123.2", 123123.223, 1},
+
+	{"123123.23", 123123.22499999999999, 2},
+	{"123123.23", 123123.22499999999993, 2}, // float precision problem, the same like fmt.Sprintf( "%.2f")
+	{"123123.22", 123123.2249993, 2},        // correct behavior, smaller precision
+}
+
 func TestRoundPrec(t *testing.T) {
-	testdata := []testRound{
-		{"123123.123", 123123.123, 3},
-		{"-123123.123", -123123.123, 3},
-
-		{"123123.1", 123123.1, 1},
-		{"123123.2", 123123.2, 1},
-
-		{"123123.46", 123123.458, 2},
-		{"123123.24", 123123.239, 2},
-		{"123123.23", 123123.232, 2},
-
-		{"123123.1", 123123.123, 1},
-		{"123123.2", 123123.223, 1},
-
-		{"123123.23", 123123.22499999999999, 2},
-		{"123123.23", 123123.22499999999993, 2}, // float precision problem, the same like fmt.Sprintf( "%.2f")
-		{"123123.22", 123123.2249993, 2},        // correct behavior, smaller precision
+	for _, data := range testdataRoundPrec {
+		assertRoundPrec(t, data)
 	}
 
-	for _, data := range testdata {
-		assertRoundPrec(t, data)
+	var val float64
+	val = math.NaN()
+	if out := RoundPrec(val, 0); !math.IsNaN(out) {
+		t.Errorf("Round from NaN should be Nan, but is %v", out)
+	}
+	val = math.Inf(1)
+	if out := RoundPrec(val, 0); !math.IsInf(out, 0) {
+		t.Errorf("Round from Inf should be Inf, but is %v", out)
 	}
 }
 
@@ -95,6 +105,10 @@ func TestRound(t *testing.T) {
 	if out := Round(val); out != 0 {
 		t.Errorf("Round from NaN should be 0, but is %v", out)
 	}
+	val = math.Inf(0)
+	if out := Round(val); out != 0 {
+		t.Errorf("Round from Inf should be 0, but is %v", out)
+	}
 }
 
 func assertNumerFormat(t *testing.T, data testNumberForm) {
@@ -114,5 +128,11 @@ func assertRoundPrec(t *testing.T, data testRound) {
 func BenchmarkNumberFormat(b *testing.B) {
 	for i := float64(0); i <= float64(b.N); i++ {
 		NumberFormat(i, 3, ",", " ")
+	}
+}
+
+func BenchmarkRoundPrec(b *testing.B) {
+	for i := float64(0); i <= float64(b.N); i++ {
+		RoundPrec(i/1234, 3)
 	}
 }
